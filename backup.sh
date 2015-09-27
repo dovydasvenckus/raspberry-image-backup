@@ -1,7 +1,9 @@
 #!/usr/bin/env sh 
-BACKUP_PATH='/mnt/old-hdd/backup/rasp-backup.img'
+BACKUP_PATH='/mnt/old-hdd/backup/'
 SERVICES="cron tomcat7 deluge-daemon samba rsync postgresql"
-
+IMAGE_NAME='raspberry-backup'
+BACKUP_DATE=$(date "+%Y-%m-%d")
+IMAGE_FILE_NAME="$BACKUP_PATH$IMAGE_NAME-$BACKUP_DATE.img"
 CURRENT_TIME=$(date "+%Y-%m-%d %H:%M:%S")
 echo "$CURRENT_TIME Started backup process"
 
@@ -14,7 +16,7 @@ done
 IMAGING_START_TIME=$(date "+%Y-%m-%d %H:%M:%S")
 echo "$IMAGING_START_TIME Image creation started"
 
-dd if=/dev/mmcblk0 of=$BACKUP_PATH
+dd if=/dev/mmcblk0 of=$IMAGE_FILE_NAME
 
 IMAGE_COMPLETED_TIME=$(date "+%Y-%m-%d %H:%M:%S")
 echo "$IMAGE_COMPLETED_TIME Image successfully created"
