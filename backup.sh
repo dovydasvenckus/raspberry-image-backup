@@ -10,13 +10,17 @@ log(){
   echo "$CURRENT_TIME $1"
 }
 
+execute_for_each_service(){
+  for service in $SERVICES
+    do
+     log "$1ing $service..."
+     /etc/init.d/$service $1
+  done
+}
+
 log "Started backup process"
 
-for service in $SERVICES
-do
-  log "Stopping $service..."
-  /etc/init.d/$service stop
-done
+execute_for_each_service "stop"
 
 log "Image creation started"
 
@@ -24,9 +28,4 @@ dd if=/dev/mmcblk0 of=$IMAGE_FILE_NAME
 
 log "Image successfully created"
 
-for service in $SERVICES
-do
-  log "Starting $service..."
-  /etc/init.d/$service start
-done
-
+execute_for_each_service "start"
