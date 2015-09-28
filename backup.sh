@@ -1,9 +1,11 @@
 #!/usr/bin/env sh 
+FILE_SYSTEM_PATH="/dev/mmcblk0"
 BACKUP_PATH='/mnt/old-hdd/backup/'
 SERVICES="cron tomcat7 deluge-daemon samba rsync postgresql"
 IMAGE_NAME='raspberry-backup'
 BACKUP_DATE=$(date "+%Y-%m-%d")
 IMAGE_FILE_NAME="$BACKUP_PATH$IMAGE_NAME-$BACKUP_DATE.img"
+COMPRESSION="GZIP"
 
 log(){
   CURRENT_TIME=$(date "+%Y-%m-%d %H:%M:%S")
@@ -18,13 +20,23 @@ execute_for_each_service(){
   done
 }
 
+create_image(){
+  if [ "$1" = "NONE" ]
+    then
+      dd if=$FILE_SYSTEM_PATH of=$IMAGE_FILE_NAME
+  elif [ "$1" = "GZIP" ]
+    then
+      dd if=$FILE_SYSTEM_PATH | gzip > "$IMAGE_FILE_NAME.gz"
+  fi
+}
+
 log "Started backup process"
 
 execute_for_each_service "stop"
 
 log "Image creation started"
 
-dd if=/dev/mmcblk0 of=$IMAGE_FILE_NAME
+create_image $COMPRESSION
 
 log "Image successfully created"
 
