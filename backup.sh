@@ -27,6 +27,9 @@ create_image(){
   elif [ "$1" = "GZIP" ]
     then
       dd if=$FILE_SYSTEM_PATH | gzip > "$IMAGE_FILE_NAME.gz"
+  elif [ "$1" = "PIGZ" ]
+    then
+      dd if=$FILE_SYSTEM_PATH | pigz --best -k > "$IMAGE_FILE_NAME.gz"
   fi
 }
 
